@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('https://via.placeholder.com/1920x1080'); /* Image URL */
+            background-size: cover;
+            background-position: center;
+            animation: backgroundAnimation 10s ease-in-out infinite alternate;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.85); /* Slight opacity for readability */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            transform: scale(0.9);
+            animation: scaleUp 0.5s ease-in-out forwards;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #4CAF50;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        input {
+            padding: 15px;
+            margin: 15px 0;
+            width: 80%;
+            font-size: 18px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border: 1px solid #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+            transform: scale(1.05);
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 80%;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-3px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: bold;
+            animation: fadeIn 1s ease-in-out 0.5s;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleUp {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes backgroundAnimation {
+            0% {
+                background-image: url('https://via.placeholder.com/1920x1080'); /* Change to your image */
+            }
+            50% {
+                background-image: url('https://via.placeholder.com/1920x1080/ff8a00/ffffff'); /* Add another background for transition effect */
+            }
+            100% {
+                background-image: url('https://via.placeholder.com/1920x1080');
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            input,
+            button {
+                font-size: 16px;
+            }
+
+            .result {
+                font-size: 1rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Age Calculator</h2>
+        <input type="date" id="birthdate" />
+        <button onclick="calculateAge()">Calculate Age</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateAge() {
+            // Get the user's birthdate from the input
+            const birthdate = document.getElementById('birthdate').value;
+            if (!birthdate) {
+                document.getElementById('result').innerHTML = "Please select a valid birthdate.";
+                return;
+            }
+
+            // Convert the birthdate to a Date object
+            const birthDateObj = new Date(birthdate);
+            const today = new Date();
+
+            // Calculate age in years, months, and days
+            let ageYears = today.getFullYear() - birthDateObj.getFullYear();
+            let ageMonths = today.getMonth() - birthDateObj.getMonth();
+            let ageDays = today.getDate() - birthDateObj.getDate();
+
+            // Adjust the age if the birth month or day hasn't been reached yet
+            if (ageMonths < 0 || (ageMonths === 0 && ageDays < 0)) {
+                ageYears--;
+                ageMonths += 12;
+            }
+            if (ageDays < 0) {
+                const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 0);
+                ageDays += lastMonth.getDate();
+            }
+
+            // Calculate the exact number of days and hours
+            const birthTime = birthDateObj.getTime();
+            const currentTime = today.getTime();
+            const timeDifference = currentTime - birthTime;
+            const totalDays = Math.floor(timeDifference / (1000 * 3600 * 24));
+            const totalHours = Math.floor(timeDifference / (1000 * 3600));
+            const totalMinutes = Math.floor(timeDifference / (1000 * 60));
+
+            // Display the results
+            document.getElementById('result').innerHTML = `
+                <p>Age: ${ageYears} years, ${ageMonths} months, ${ageDays} days</p>
+                <p>Total days lived: ${totalDays} days</p>
+                <p>Total hours lived: ${totalHours} hours</p>
+                <p>Total minutes lived: ${totalMinutes} minutes</p>
+            `;
+        }
+    </script>
+
+</body>
+</html>
